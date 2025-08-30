@@ -1,19 +1,21 @@
 // src/webhook.server.ts
 import { Bot, webhookCallback } from "grammy";
-import 'dotenv/config';
+import "dotenv/config";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
 
 // Конфигурация: берем токены из переменных окружения
-const BOT_TOKEN = process.env.BOT_TOKEN;         // основной бот (LawSense)
+const BOT_TOKEN = process.env.BOT_TOKEN; // основной бот (LawSense)
 const MED_BOT_TOKEN = process.env.MED_BOT_TOKEN; // медицинский бот (Densa) — опционально
 const PORT = Number(process.env.PORT ?? 3000);
 
 // Валидация токена (останавливаем процесс, если токен не задан)
 if (!BOT_TOKEN || BOT_TOKEN === "YOUR_BOT_TOKEN_HERE") {
-  console.error("⚠️ Не установлен BOT_TOKEN. Установите переменную окружения BOT_TOKEN.");
+  console.error(
+    "⚠️ Не установлен BOT_TOKEN. Установите переменную окружения BOT_TOKEN.",
+  );
   process.exit(1);
 }
 
@@ -32,29 +34,29 @@ lawBot.command("start", async (ctx) => {
   const username = ctx.from?.username || "Пользователь";
   await ctx.reply(
     `Привет, @${username}!\n\n` +
-    `Это LawSense - юридический помощник.\n\n` +
-    `Доступные команды:\n` +
-    `/help - помощь\n` +
-    `/article [номер] - найти статью\n` +
-    `/ask [вопрос] - задать юридический вопрос\n` +
-    `/stats - статистика`,
-    { parse_mode: "HTML" }
+      `Это LawSense - юридический помощник.\n\n` +
+      `Доступные команды:\n` +
+      `/help - помощь\n` +
+      `/article [номер] - найти статью\n` +
+      `/ask [вопрос] - задать юридический вопрос\n` +
+      `/stats - статистика`,
+    { parse_mode: "HTML" },
   );
 });
 
 lawBot.command("help", async (ctx) => {
   await ctx.reply(
     `Помощь по LawSense:\n\n` +
-    `Основные команды:\n` +
-    `/start - начать работу\n` +
-    `/article 116 - найти статью 116\n` +
-    `/ask - задать юридический вопрос\n` +
-    `/stats - посмотреть статистику\n\n` +
-    `Примеры вопросов:\n` +
-    `• "Что делать при нарушении ПДД?"\n` +
-    `• "Как подать в суд?"\n` +
-    `• "Права потребителя"`,
-    { parse_mode: "HTML" }
+      `Основные команды:\n` +
+      `/start - начать работу\n` +
+      `/article 116 - найти статью 116\n` +
+      `/ask - задать юридический вопрос\n` +
+      `/stats - посмотреть статистику\n\n` +
+      `Примеры вопросов:\n` +
+      `• "Что делать при нарушении ПДД?"\n` +
+      `• "Как подать в суд?"\n` +
+      `• "Права потребителя"`,
+    { parse_mode: "HTML" },
   );
 });
 
@@ -68,9 +70,9 @@ lawBot.command("article", async (ctx) => {
 
   await ctx.reply(
     `Статья ${articleNumber}\n\n` +
-    `Ищу статью ${articleNumber} в базе данных...\n\n` +
-    `В демо-версии показывается заглушка.`,
-    { parse_mode: "HTML" }
+      `Ищу статью ${articleNumber} в базе данных...\n\n` +
+      `В демо-версии показывается заглушка.`,
+    { parse_mode: "HTML" },
   );
 });
 
@@ -87,35 +89,36 @@ lawBot.command("ask", async (ctx) => {
   // Явно указали тип массива, чтобы избежать `string | undefined`
   const responses: string[] = [
     `По вашему вопросу "${question}":\n\nРекомендую обратиться к статьям 115-118 КоАП РК.\nДля точной консультации свяжитесь с юристом.\n\n(Демо-ответ.)`,
-    `Анализ вопроса: "${question}"\n\nНайдены релевантные статьи в базе.\nВ продакшене здесь будет развернутый ответ с ссылками.`
+    `Анализ вопроса: "${question}"\n\nНайдены релевантные статьи в базе.\nВ продакшене здесь будет развернутый ответ с ссылками.`,
   ];
 
-    setTimeout(async () => {
+  setTimeout(async () => {
     const idx = Math.floor(Math.random() * responses.length);
     const randomResponse = responses[idx];
 
     // Защита на случай неожиданной пустоты массива
     if (typeof randomResponse !== "string") {
-        // fallback-ответ на всякий случай
-        await ctx.reply("Произошла внутренняя ошибка: отсутствует ответ.", { parse_mode: "HTML" });
-        return;
+      // fallback-ответ на всякий случай
+      await ctx.reply("Произошла внутренняя ошибка: отсутствует ответ.", {
+        parse_mode: "HTML",
+      });
+      return;
     }
 
     await ctx.reply(randomResponse, { parse_mode: "HTML" });
-    }, 2000);
-
+  }, 2000);
 });
 
 lawBot.command("stats", async (ctx) => {
   const userId = ctx.from?.id ?? "unknown";
   await ctx.reply(
     `Статистика пользователя\n\n` +
-    `ID: <code>${userId}</code>\n` +
-    `Запросов сегодня: 5\n` +
-    `Всего запросов: 23\n` +
-    `Подписка: Базовая\n\n` +
-    `В реальной версии данные берутся из PostgreSQL`,
-    { parse_mode: "HTML" }
+      `ID: <code>${userId}</code>\n` +
+      `Запросов сегодня: 5\n` +
+      `Всего запросов: 23\n` +
+      `Подписка: Базовая\n\n` +
+      `В реальной версии данные берутся из PostgreSQL`,
+    { parse_mode: "HTML" },
   );
 });
 
@@ -129,26 +132,26 @@ lawBot.on("message:text", async (ctx) => {
   if (lowered.includes("пдд") || lowered.includes("дтп")) {
     await ctx.reply(
       `Вопрос по ПДД/ДТП:\n\n` +
-      `Рекомендую изучить статьи 115-118 КоАП РК.\n` +
-      `При серьезных нарушениях обращайтесь к юристу.`,
-      { parse_mode: "HTML" }
+        `Рекомендую изучить статьи 115-118 КоАП РК.\n` +
+        `При серьезных нарушениях обращайтесь к юристу.`,
+      { parse_mode: "HTML" },
     );
   } else if (lowered.includes("суд") || lowered.includes("иск")) {
     await ctx.reply(
       `Судебные вопросы:\n\n` +
-      `Для подачи иска необходимо:\n` +
-      `• Составить исковое заявление\n` +
-      `• Собрать доказательства\n` +
-      `• Оплатить госпошлину\n\n` +
-      `Рекомендуется консультация с юристом.`,
-      { parse_mode: "HTML" }
+        `Для подачи иска необходимо:\n` +
+        `• Составить исковое заявление\n` +
+        `• Собрать доказательства\n` +
+        `• Оплатить госпошлину\n\n` +
+        `Рекомендуется консультация с юристом.`,
+      { parse_mode: "HTML" },
     );
   } else {
     await ctx.reply(
       `Обработка вопроса: "${text}"\n\n` +
-      `В реальной версии тут будет AI-анализ и ссылки на законы.\n` +
-      `Используйте /help или /ask [вопрос]`,
-      { parse_mode: "HTML" }
+        `В реальной версии тут будет AI-анализ и ссылки на законы.\n` +
+        `Используйте /help или /ask [вопрос]`,
+      { parse_mode: "HTML" },
     );
   }
 });
@@ -158,13 +161,13 @@ medBot.command("start", async (ctx) => {
   const username = ctx.from?.username || "Пользователь";
   await ctx.reply(
     `Привет, @${username}!\n\n` +
-    `Densa - медицинский помощник.\n\n` +
-    `Важно: информация не заменяет консультацию врача!\n\n` +
-    `Доступные команды:\n` +
-    `/help - помощь\n` +
-    `/symptoms - описать симптомы\n` +
-    `/emergency - экстренные случаи`,
-    { parse_mode: "HTML" }
+      `Densa - медицинский помощник.\n\n` +
+      `Важно: информация не заменяет консультацию врача!\n\n` +
+      `Доступные команды:\n` +
+      `/help - помощь\n` +
+      `/symptoms - описать симптомы\n` +
+      `/emergency - экстренные случаи`,
+    { parse_mode: "HTML" },
   );
 });
 
@@ -174,17 +177,17 @@ medBot.on("message:text", async (ctx) => {
   if (text.includes("болит") || text.includes("боль")) {
     await ctx.reply(
       `Болевые ощущения\n\n` +
-      `При сильной боли обратитесь к врачу!\n` +
-      `Экстренная помощь: 103\n\n` +
-      `Это не замена медицинской консультации.`,
-      { parse_mode: "HTML" }
+        `При сильной боли обратитесь к врачу!\n` +
+        `Экстренная помощь: 103\n\n` +
+        `Это не замена медицинской консультации.`,
+      { parse_mode: "HTML" },
     );
   } else {
     await ctx.reply(
       `Спасибо за обращение!\n\n` +
-      `Для точного диагноза и лечения обязательно обратитесь к врачу.\n` +
-      `Экстренная помощь: 103`,
-      { parse_mode: "HTML" }
+        `Для точного диагноза и лечения обязательно обратитесь к врачу.\n` +
+        `Экстренная помощь: 103`,
+      { parse_mode: "HTML" },
     );
   }
 });
@@ -200,8 +203,8 @@ app.get("/health", (c) => {
     timestamp: new Date().toISOString(),
     bots: {
       lawsense: "active",
-      densa: "active"
-    }
+      densa: "active",
+    },
   });
 });
 
@@ -249,16 +252,22 @@ async function setupWebhook() {
   if (webhookUrl) {
     try {
       await lawBot.api.setWebhook(`${webhookUrl}/webhook/lawsense`);
-      console.log(`Webhook установлен для LawSense: ${webhookUrl}/webhook/lawsense`);
+      console.log(
+        `Webhook установлен для LawSense: ${webhookUrl}/webhook/lawsense`,
+      );
       if (MED_BOT_TOKEN) {
         await medBot.api.setWebhook(`${webhookUrl}/webhook/densa`);
-        console.log(`Webhook установлен для Densa: ${webhookUrl}/webhook/densa`);
+        console.log(
+          `Webhook установлен для Densa: ${webhookUrl}/webhook/densa`,
+        );
       }
     } catch (error) {
       console.error("Ошибка установки webhook:", error);
     }
   } else {
-    console.log("Установите переменную WEBHOOK_URL для автоматической настройки webhook'ов");
+    console.log(
+      "Установите переменную WEBHOOK_URL для автоматической настройки webhook'ов",
+    );
   }
 }
 
@@ -275,17 +284,17 @@ async function startServer() {
 }
 
 // Обработка ошибок и graceful shutdown
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
 
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception:", error);
   process.exit(1);
 });
 
-process.on('SIGINT', () => {
-  console.log('Получен SIGINT, завершаю работу...');
+process.on("SIGINT", () => {
+  console.log("Получен SIGINT, завершаю работу...");
   process.exit(0);
 });
 
