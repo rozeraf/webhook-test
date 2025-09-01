@@ -4,9 +4,8 @@
   "description": "",
   "main": "dist/webhook.server.js",
   "scripts": {
-    "dev": "tsx watch src/webhook.server.ts",
-    "build": "tsc",
-    "start": "node dist/webhook.server.js",
+    "dev": "bun --watch src/webhook.server.ts",
+    "start": "bun src/webhook.server.ts",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write src/**/*.ts"
   },
@@ -17,12 +16,11 @@
     "hono": "^3.11.7"
   },
   "devDependencies": {
-    "@types/node": "^20.10.5",
+    "@types/node": "^24.3.0",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
     "eslint": "^8.56.0",
     "prettier": "^3.1.1",
-    "tsx": "^4.6.2",
     "typescript": "^5.3.3"
   },
   "keywords": [

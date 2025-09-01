@@ -7,9 +7,9 @@ import { logger } from "hono/logger";
 import { cors } from "hono/cors";
 
 // Конфигурация: берем токены из переменных окружения
-const BOT_TOKEN = process.env.BOT_TOKEN; // основной бот (LawSense)
-const MED_BOT_TOKEN = process.env.MED_BOT_TOKEN; // медицинский бот (Densa) — опционально
-const PORT = Number(process.env.PORT ?? 3000);
+const BOT_TOKEN = Bun.env.BOT_TOKEN;
+const MED_BOT_TOKEN = Bun.env.MED_BOT_TOKEN;
+const PORT = Number(Bun.env.PORT ?? 3000);
 
 // Валидация токена (останавливаем процесс, если токен не задан)
 if (!BOT_TOKEN || BOT_TOKEN === "YOUR_BOT_TOKEN_HERE") {
