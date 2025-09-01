@@ -4,9 +4,9 @@
   "description": "",
   "main": "dist/webhook.server.js",
   "scripts": {
-    "dev": "tsx watch -r src/webhook.server.ts",
+    "dev": "tsx watch src/webhook.server.ts",
     "build": "tsc",
-    "start": "node -r dist/webhook.server.js",
+    "start": "node dist/webhook.server.js",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write src/**/*.ts"
   },
